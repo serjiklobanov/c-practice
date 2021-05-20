@@ -24,7 +24,7 @@ static std::string makeRandomString(int minL = 7, int maxL = 14)
 
     std::string s;
     s.reserve(length);
-    // сделать случайную строку
+    // СЃРґРµР»Р°С‚СЊ СЃР»СѓС‡Р°Р№РЅСѓСЋ СЃС‚СЂРѕРєСѓ
     for (int i = 0; i < length; ++i) {
         s += alphanum[rand() % (sizeof(alphanum) - 1)];
     }
@@ -39,9 +39,8 @@ static void generate(TestStruct* pts)
     pts->value2 = makeRandomString();
 }
 
-void TestListFunction()
+void TestMMFunction()
 {
-    // тест односвязного списка
 
     TestMM mem_manager(2, true);
     for (int i = 0; i < ELEMENTS_COUNT; ++i)
@@ -71,6 +70,6 @@ void TestListFunction()
 
 int main()
 {
-    TestListFunction();
+    TestMMFunction();
     return 0;
 }

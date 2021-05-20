@@ -9,13 +9,13 @@ namespace lab618
     private:
         struct block
         {
-            // Массив данных блока
+            // РњР°СЃСЃРёРІ РґР°РЅРЅС‹С… Р±Р»РѕРєР°
             T* pdata;
-            // Адрес следующего блока
+            // РђРґСЂРµСЃ СЃР»РµРґСѓСЋС‰РµРіРѕ Р±Р»РѕРєР°
             block *pnext;
-            // Первая свободная ячейка
+            // РџРµСЂРІР°СЏ СЃРІРѕР±РѕРґРЅР°СЏ СЏС‡РµР№РєР°
             int firstFreeIndex;
-            // Число заполненных ячеек
+            // Р§РёСЃР»Рѕ Р·Р°РїРѕР»РЅРµРЅРЅС‹С… СЏС‡РµРµРє
             int usedCount;
         };
     public:
@@ -36,24 +36,10 @@ namespace lab618
 
         virtual ~CMemoryManager()
         {
-            if (!m_isDeleteElementsOnDestruct)
-            {
-                while (m_pCurrentBlk)
-                {
-                    if (m_pCurrentBlk->usedCount != 0)
-                    {
-                        throw CException();
-                    }
-                    m_pCurrentBlk = m_pCurrentBlk->pnext;
-                }
-            }
-            else
-            {
-                clear();
-            }
+            clear();
         }
 
-        // Получить адрес нового элемента из менеджера
+        // РџРѕР»СѓС‡РёС‚СЊ Р°РґСЂРµСЃ РЅРѕРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° РёР· РјРµРЅРµРґР¶РµСЂР°
         T* newObject()
         {
             m_pCurrentBlk = m_pBlocks;
@@ -71,7 +57,7 @@ namespace lab618
             return new(&(m_pCurrentBlk->pdata[i])) T;
         }
 
-        // Освободить элемент в менеджере
+        // РћСЃРІРѕР±РѕРґРёС‚СЊ СЌР»РµРјРµРЅС‚ РІ РјРµРЅРµРґР¶РµСЂРµ
         bool deleteObject(T* p)
         {
             m_pCurrentBlk = m_pBlocks;
@@ -94,15 +80,34 @@ namespace lab618
             }
         }
 
-        // Очистка данных, зависит от m_isDeleteElementsOnDestruct
+        // РћС‡РёСЃС‚РєР° РґР°РЅРЅС‹С…, Р·Р°РІРёСЃРёС‚ РѕС‚ m_isDeleteElementsOnDestruct
         void clear()
         {
+            m_pCurrentBlk = m_pBlocks;
+            if (!m_isDeleteElementsOnDestruct)
+            {
+                while (m_pCurrentBlk)
+                {
+                    if (m_pCurrentBlk->usedCount != 0)
+                    {
+                        throw CException();
+                    }
+                    m_pCurrentBlk = m_pCurrentBlk->pnext;
+                }
+            }
             m_pCurrentBlk = m_pBlocks;
             while (m_pCurrentBlk)
             {
                 block* tmp = m_pCurrentBlk;
                 m_pCurrentBlk = m_pCurrentBlk->pnext;
-                deleteBlock(tmp);
+                if (m_isDeleteElementsOnDestruct)
+                {
+                    deleteBlock(tmp);
+                }
+                else
+                {
+                    delete[] reinterpret_cast<char*>(tmp->pdata);
+                }
                 delete tmp;
             }
             m_pBlocks = nullptr;
@@ -110,7 +115,7 @@ namespace lab618
         }
     private:
 
-        // Создать новый блок данных. применяется в newObject
+        // РЎРѕР·РґР°С‚СЊ РЅРѕРІС‹Р№ Р±Р»РѕРє РґР°РЅРЅС‹С…. РїСЂРёРјРµРЅСЏРµС‚СЃСЏ РІ newObject
         block* newBlock()
         {
             block* tmp = new block;
@@ -126,7 +131,7 @@ namespace lab618
             return m_pBlocks;
         }
 
-        // Освободить память блока данных. Применяется в clear
+        // РћСЃРІРѕР±РѕРґРёС‚СЊ РїР°РјСЏС‚СЊ Р±Р»РѕРєР° РґР°РЅРЅС‹С…. РџСЂРёРјРµРЅСЏРµС‚СЃСЏ РІ clear
         void deleteBlock(block *p)
         {
             while (p->usedCount != m_blkSize) 
@@ -146,13 +151,13 @@ namespace lab618
 
         }
 
-        // Размер блока
+        // Р Р°Р·РјРµСЂ Р±Р»РѕРєР°
         int m_blkSize;
-        // Начало списка блоков
+        // РќР°С‡Р°Р»Рѕ СЃРїРёСЃРєР° Р±Р»РѕРєРѕРІ
         block* m_pBlocks;
-        // Текущий блок
+        // РўРµРєСѓС‰РёР№ Р±Р»РѕРє
         block *m_pCurrentBlk;
-        // Удалять ли элементы при освобождении
+        // РЈРґР°Р»СЏС‚СЊ Р»Рё СЌР»РµРјРµРЅС‚С‹ РїСЂРё РѕСЃРІРѕР±РѕР¶РґРµРЅРёРё
         bool m_isDeleteElementsOnDestruct;
     };
 }; // namespace lab618
