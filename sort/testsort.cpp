@@ -23,19 +23,20 @@ void TestSortFunction()
         data[i] = rand();
     }
     
-    int **numbs = new int *[data.size()];
+    int **array = new int *[data.size()];
     for (int i = 0; i < data.size(); ++i)
     {
-        numbs[i] = &data[i];
+        array[i] = &data[i];
     }
-    templates::heapSort(numbs, data.size(), intComparator);
+    templates::heapSort(array, data.size(), intComparator);
 
     std::vector<int> copyData = data;
     std::sort(copyData.begin(), copyData.end());
     for (int i = 0; i < data.size(); ++i)
     {
-        assert(copyData[i] == *numbs[i]);
+        assert(copyData[i] == *array[i]);
     }
+    delete[] array;
 }
 
 int main()
