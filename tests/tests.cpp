@@ -144,7 +144,7 @@ int main()
     TestStruct* data = new TestStruct[N];
     lab618::CHash<TestStruct, hash, Compare> Table(13, 2);*/
 
-    for (int i = 4; i < size; ++i)
+    for (int i = 0; i < size - 1; ++i)
     {
         int N = Ns[i];
         
@@ -192,7 +192,7 @@ int main()
         t.reset();
         for (int i = 0; i < N; ++i)
         {
-            binSearch(data[i], array, data.size());
+            Table.find(data[i]);
         }
         std::cout << "search source, hash, " << N << ", " << t.elapsed() << '\n';
 
@@ -218,7 +218,7 @@ int main()
         t.reset();
         for (int i = 0; i < N * 2; ++i)
         {
-            binSearch(doubleData[i], array, data.size());
+            Table.find(doubleData[i]);
         }
         std::cout << "search random, hash, " << N << ", " << t.elapsed() << '\n';
 
